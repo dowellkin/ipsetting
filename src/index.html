@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <nav>
+        <a href="#ipsetting">IPsetting</a>
+        <a href="#mit">МИТ</a>
+    </nav>
+
+    <main>
+        <section id="mit">
+            <h1>МИТ</h1>
+            <label>
+                Размер пакета: 
+                <input name="mit-packetsize" type="number" class="packet-size">  
+            </label>
+            <br>
+            <textarea name="mit" id="mit" cols="30" rows="5" placeholder="place mit here"></textarea>
+
+            <table class="mit-table">
+            </table>
+
+            <div class="mit-tables">
+
+            </div>
+        </section>
+
+        <section id="ipsetting">
+            <h1>IPsetting</h1>
+            <label>
+                Интенсивность потока: 
+                <input name="intensivnost" type="number">  
+            </label>
+            <br>
+            <label>
+                Размер пакета: 
+                <input name="packetsize" type="number" class="packet-size">  
+            </label>
+            <br>
+            <button class="calc-btn">calculate</button>
+
+            <label>
+                <input type="checkbox" name="iptv" id="">
+                ip tv
+            </label>
+            
+            <table class="main-table">
+            <tr>
+                <th>ОЦК, шт</th>
+                <th>С, бит/с</th>
+                <th>ρ</th>
+                <th>T<sub>зад</sub>, с</th>
+                <th>P<sub>сд</sub></th>
+                <th>P<sub>п</sub></th>
+            </tr>
+            </table>
+
+            <button class="copy">copy</button>
+        </section>
+    </main>
+
+    <script src="./js/main.js"></script>
+    <script src="./js/ipsetting.js"></script>
+    <script src="./js/mit.js"></script>
+</body>
+</html>
