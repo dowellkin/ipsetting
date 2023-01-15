@@ -10,11 +10,14 @@ function calculate({load, intensPotoka, packetSize}) {
         load,
         delay,
         lost,
-        inTime
+        inTime,
+        intensPotoka,
+        packetSize
     }
 }
-
 // default values
+
+const load = [0.2, 0.4, 0.6, 0.8];
 
 const intensPotoka = 10;
 document.querySelector('input[name="intensivnost"]').value = intensPotoka;
@@ -27,7 +30,35 @@ packetSizeInputs.forEach(inp => {
     inp.value = packetSize
 
     inp.addEventListener('input', (e) => {
-        localStorage.setItem('packetSize', parseInt(e.target.value, 10));
-        packetSizeInputs.forEach(i => i.value = e.target.value)
+        packetSizeInputs.forEach(i => {
+            let val = e.target.value;
+            val = val.replace(/[\.,]/g, '');
+            i.value = val;
+        })
+        localStorage.setItem("packetSize", parseInt(e.target.value, 10));
     })
 });
+
+function selectElementContents(el) {
+  var body = document.body,
+    range,
+    sel;
+  if (document.createRange && window.getSelection) {
+    range = document.createRange();
+    sel = window.getSelection();
+    sel.removeAllRanges();
+    try {
+      range.selectNodeContents(el);
+      sel.addRange(range);
+    } catch (e) {
+      range.selectNode(el);
+      sel.addRange(range);
+    }
+  } else if (body.createTextRange) {
+    range = body.createTextRange();
+    range.moveToElementText(el);
+    range.select();
+  }
+  document.execCommand("Copy");
+  sel.removeRange(range);
+}

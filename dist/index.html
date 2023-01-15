@@ -7,6 +7,15 @@
     <title>Document</title>
 
     <style>
+body, html {
+    margin: 0;
+    bottom: 0;
+}
+
+body {
+    font-family: sans-serif;
+}
+
 table {
     border-spacing: 0;
     border-collapse: collapse;
@@ -16,10 +25,11 @@ td,
 th {
     border: 1px solid black;
     padding: 2px 5px;
+    background: #fff;
 }
 
 th {
-    background: rgba(0, 0, 0, .2);
+    background: rgb(220, 220, 220);
 }
 
 section {
@@ -33,55 +43,140 @@ section:target{
 section:not(:target) ~ section:last-child {
     display: block;
 }
+
+.hide-ock th:first-child,
+.hide-ock td:first-child {
+    display: none;
+}
+
+header {
+    background-color: #f2e3c6;
+    padding: 15px 0;
+}
+
+nav a {
+    text-decoration: none;
+    background: #ffc6a5;
+    border-radius: 4px;
+    padding: 5px 8px;
+    color: #2b2b2b;
+}
+
+nav a:not(:last-child) {
+    margin-right: 5px;
+}
+
+.container {
+    margin: 0 auto;
+    max-width: 1040px;
+    padding: 0 10px;
+}
+
+main {
+    margin-top: 10px;
+}
+
+section {
+    background: #ffc6a5;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+h1 {
+    margin-top: 0;
+}
+
+.inputs {
+    margin-bottom: 20px;
+}
+
+.inputs label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.inputs label input:not([type="checkbox"]) {
+    display: block;
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: none;
+}
+
+.mit-table {
+    margin-bottom: 10px;
+}
+
+.mit-table:empty ~ .mit-calc-btn {
+    display: none;
+}
 </style>
 </head>
 <body>
-    <nav>
-        <a href="#ipsetting">IPsetting</a>
-        <a href="#mit">МИТ</a>
-    </nav>
+    <header>
+        <div class="container">
+            <nav>
+                <a href="#ipsetting">IPsetting</a>
+                <a href="#mit">МИТ</a>
+            </nav>
+        </div>
+    </header>
 
     <main>
-        <section id="mit">
-            <h1>МИТ</h1>
-            <textarea name="mit" id="mit" cols="30" rows="10" placeholder="place mit here"></textarea>
+        <div class="container">
+            <section id="mit">
+                <h1>МИТ</h1>
+                <div class="inputs">
+                    <label>
+                        Размер пакета, байт: 
+                        <input name="mit-packetsize" type="number" class="packet-size">  
+                    </label>
 
-            <table class="mit-table">
-            </table>
-        </section>
+                    <textarea name="mit" id="mit-textarea" cols="30" rows="5" placeholder="Скопируйте сюда таблицу МИТ"></textarea>
+                </div>
 
-        <section id="ipsetting">
-            <h1>IPsetting</h1>
-            <label>
-                Интенсивность потока: 
-                <input name="intensivnost" type="number">  
-            </label>
-            <br>
-            <label>
-                Размер пакета: 
-                <input name="packetsize" type="number">  
-            </label>
-            <br>
-            <button class="calc-btn">calculate</button>
+                <table class="mit-table"></table>
 
-            <label>
-                <input type="checkbox" name="iptv" id="">
-                ip tv
-            </label>
-            
-            <table class="main-table">
-            <tr>
-                <th>ОЦК, шт</th>
-                <th>С, бит/с</th>
-                <th>ρ</th>
-                <th>T<sub>зад</sub>, с</th>
-                <th>P<sub>сд</sub></th>
-                <th>P<sub>п</sub></th>
-            </tr>
-            </table>
+                <!-- <button class="mit-calc-btn">Рассчитать таблицы</button> -->
 
-            <button class="copy">copy</button>
-        </section>
+                <div class="mit-tables"></div>
+            </section>
+
+            <section id="ipsetting">
+                <h1>IPsetting</h1>
+
+                <div class="inputs">
+                    <label>
+                        Размер пакета, байт: 
+                        <input name="packetsize" type="number" class="packet-size">  
+                    </label>
+
+                    <label>
+                        Интенсивность потока, пакет/с: 
+                        <input name="intensivnost" type="number" step="1">  
+                    </label>
+                    
+                    <label>
+                        <input type="checkbox" name="showOCK" id="">
+                        Показать ОЦК
+                    </label>
+
+                    <button class="calc-btn">Рассчитать</button>
+                </div>
+                
+                <table class="main-table hide-ock">
+                    <tr>
+                        <th>ОЦК, шт</th>
+                        <th>С, бит/с</th>
+                        <th>ρ</th>
+                        <th>T<sub>зад</sub>, с</th>
+                        <th>P<sub>сд</sub></th>
+                        <th>P<sub>п</sub></th>
+                    </tr>
+                </table>
+
+                <button class="copy">Копировать</button>
+            </section>
+        </div>
     </main>
 
     <script>
@@ -97,25 +192,83 @@ function calculate({load, intensPotoka, packetSize}) {
         load,
         delay,
         lost,
-        inTime
+        inTime,
+        intensPotoka,
+        packetSize
     }
 }
-</script>
-    <script>
+// default values
+
 const load = [0.2, 0.4, 0.6, 0.8];
 
 const intensPotoka = 10;
-const packetSize = 592;
+document.querySelector('input[name="intensivnost"]').value = intensPotoka;
 
+const savedPacketSize = parseInt(localStorage.getItem('packetSize'), 10);
+const packetSize = savedPacketSize ? savedPacketSize : 592;
+
+const packetSizeInputs = Array.from(document.querySelectorAll('.packet-size'));
+packetSizeInputs.forEach(inp => {
+    inp.value = packetSize
+
+    inp.addEventListener('input', (e) => {
+        packetSizeInputs.forEach(i => {
+            let val = e.target.value;
+            val = val.replace(/[\.,]/g, '');
+            i.value = val;
+        })
+        localStorage.setItem("packetSize", parseInt(e.target.value, 10));
+    })
+});
+
+function selectElementContents(el) {
+  var body = document.body,
+    range,
+    sel;
+  if (document.createRange && window.getSelection) {
+    range = document.createRange();
+    sel = window.getSelection();
+    sel.removeAllRanges();
+    try {
+      range.selectNodeContents(el);
+      sel.addRange(range);
+    } catch (e) {
+      range.selectNode(el);
+      sel.addRange(range);
+    }
+  } else if (body.createTextRange) {
+    range = body.createTextRange();
+    range.moveToElementText(el);
+    range.select();
+  }
+  document.execCommand("Copy");
+  sel.removeRange(range);
+}
+</script>
+    <script>
 const table = document.querySelector(".main-table");
 const intensElem = document.querySelector('input[name="intensivnost"]');
 const packetSizeElem = document.querySelector('input[name="packetsize"]');
-
-intensElem.value = intensPotoka;
-packetSizeElem.value = packetSize;
+const showOCKElem = document.querySelector('input[name="showOCK"]');
 
 document.querySelector(".calc-btn").addEventListener("click", () => {
-	output(+intensElem.value, +packetSizeElem.value);
+	output(parseFloat(intensElem.value.replace(",", ".")), +packetSizeElem.value);
+});
+
+function hideOCKHandler(element) {
+	if (element.checked) {
+		table.classList.remove("hide-ock");
+		localStorage.setItem("hide-ock", 1);
+	} else {
+		table.classList.add("hide-ock");
+		localStorage.setItem("hide-ock", 0);
+	}
+}
+
+showOCKElem.checked = +localStorage.getItem("hide-ock") ?? 0;
+hideOCKHandler(showOCKElem);
+showOCKElem.addEventListener('change', (e) => {
+	hideOCKHandler(e.target);
 });
 
 output(intensPotoka, packetSize);
@@ -140,7 +293,6 @@ function generateRow(opts) {
 	let load = opts.load;
 	let delay = opts.delay;
 	let lost = opts.lost;
-	// console.log(opts, load)
 
 	const tr = document.createElement("tr");
 	tr.classList.add("table-row");
@@ -172,48 +324,40 @@ function generateRow(opts) {
 	return tr;
 }
 
-function selectElementContents(el) {
-  var body = document.body,
-    range,
-    sel;
-  if (document.createRange && window.getSelection) {
-    range = document.createRange();
-    sel = window.getSelection();
-    sel.removeAllRanges();
-    try {
-      range.selectNodeContents(el);
-      sel.addRange(range);
-    } catch (e) {
-      range.selectNode(el);
-      sel.addRange(range);
-    }
-  } else if (body.createTextRange) {
-    range = body.createTextRange();
-    range.moveToElementText(el);
-    range.select();
-  }
-  document.execCommand("Copy");
-  sel.removeRange(range);
-}
-
 document.querySelector(".copy").addEventListener("click", () => {
   selectElementContents(document.querySelector(".main-table"));
 });
 
 </script>
     <script>
-const mitElement = document.getElementById("mit");
-const mitTable = document.querySelector(".mit-table");
+const mitTablesContainer = document.querySelector(".mit-tables");
+const mitElement = document.getElementById("mit-textarea");
+let mitCalcBtn = document.querySelector(".mit-calc-btn");
+let mitTable = document.querySelector(".mit-table");
 
 mitElement.addEventListener("input", (e) => {
-  const data = e.target.value;
-  const rows = data.split("\n");
-  rows.pop();
-  const cells = rows.map((el) => el.split("\t"));
-  console.log(`cells`, cells);
+  const cells = parseTextarea(e.target.value.trim());
+  const table = buildPreviewTable(cells);
+  mitTable.parentNode.replaceChild(table, mitTable);
+  mitTable = table;
+  mitTable.classList.add("mit-table");
 
-  console.log(mitTable)
-  mitTable.innerHTML = "";
+  const data = removeExtraFields(cells);
+  const calculatedTables = calculateTables(data);
+  outputTables(calculatedTables);
+});
+
+function parseTextarea(tableString) {
+  const rows = tableString.split("\n");
+  let cells = rows.map((el) => el.split("\t"));
+  if(cells.length == 1 && cells[0].length == 1 && cells[0][0] == "") {
+    cells = [];
+  }
+  return cells;
+}
+
+function buildPreviewTable(cells) {
+  const table = document.createElement('table');
   for (let i = 0; i < cells.length; i++) {
     const tr = document.createElement("tr");
 
@@ -223,10 +367,112 @@ mitElement.addEventListener("input", (e) => {
       tr.appendChild(td);
     }
 
-    mitTable.appendChild(tr);
+    table.appendChild(tr);
   }
-});
+  return table;
+}
 
+function removeExtraFields(cells) {
+  const data = JSON.parse(JSON.stringify(cells));
+  const sumRegex = /суммарный/i;
+  if (data.at(-1)[0]?.match(sumRegex)) {
+    data.pop();
+  }
+
+  if (data[0].at(-1)?.match(sumRegex)) {
+    data.forEach(row => row.pop());
+  }
+  return data;
+}
+
+function calculateTables(cells) {
+  const result = [];
+  for(let i = 1; i < cells.length; i++) {
+    const singleTable = {};
+    for(let j = 1; j < cells[i].length; j++) {
+      if(i == j) continue;
+      const infoLoad = [];
+      load.forEach(loadElem => {
+        infoLoad.push(calculate({
+          load: loadElem,
+          intensPotoka: parseFloat(cells[i][j].replaceAll(",", ".")) * 8,
+          packetSize: parseFloat(document.querySelector('input[name="mit-packetsize"]').value),
+        }));
+      });
+      singleTable[`M${i}-M${j}`] = infoLoad;
+    }
+    result.push(singleTable);
+  }
+  return result;
+}
+
+function outputTables(tables) {
+  mitTablesContainer.innerHTML = "";
+  tables.forEach((table, index) => {
+    const tableTitle = document.createElement('p');
+    tableTitle.innerText = `Сетевые параметры для маршрутизатора М${index + 1} по всем направлениям связи`;
+    mitTablesContainer.append(tableTitle);
+
+    const readyTable = buildReadyTable(table);
+    mitTablesContainer.append(readyTable);
+  });
+}
+
+function buildReadyTable(table) {
+  const tableWrapper = document.createElement('table');
+  const headers = [
+    "Направление связи",
+    "С, бит/с",
+    "ρ",
+    "T<sub>зад</sub>, с",
+    "P<sub>сд</sub>",
+    "P<sub>п</sub>",
+  ];
+  const headerTr = document.createElement('tr');
+  headers.forEach((header) => {
+    const th = document.createElement('th');
+    th.innerHTML = header;
+    headerTr.appendChild(th);
+  });
+  tableWrapper.appendChild(headerTr);
+
+  Object.entries(table).forEach(([key, values]) => {
+    values.forEach((data, ind) => {
+      const tr = document.createElement("tr");
+      if(ind == 0) {
+        const td = document.createElement("td");
+        td.innerText = key;
+        td.setAttribute("rowspan", 4);
+        tr.appendChild(td);
+      }
+
+      const tdspeed = document.createElement("td");
+      tdspeed.innerText = data.speed.toFixed(2).replace(".", ",");
+
+      const tdload = document.createElement("td");
+      tdload.innerText = String(data.load).replace(".", ",");
+
+      const tddelay = document.createElement("td");
+      tddelay.innerText = data.delay.toFixed(6).replace(".", ",");
+
+      const tdinTime = document.createElement("td");
+      tdinTime.innerText = data.inTime.toFixed(6).replace(".", ",");
+
+      const tdlost = document.createElement("td");
+      tdlost.innerText = data.lost.toFixed(6).replace(".", ",");
+
+
+      tr.appendChild(tdspeed);
+      tr.appendChild(tdload);
+      tr.appendChild(tddelay);
+      tr.appendChild(tdinTime);
+      tr.appendChild(tdlost);
+      tableWrapper.appendChild(tr);
+    })
+  })
+
+  return tableWrapper;
+}
 </script>
 </body>
 </html>

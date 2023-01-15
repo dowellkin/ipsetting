@@ -9,61 +9,71 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <nav>
-        <a href="#ipsetting">IPsetting</a>
-        <a href="#mit">МИТ</a>
-    </nav>
+    <header>
+        <div class="container">
+            <nav>
+                <a href="#ipsetting">IPsetting</a>
+                <a href="#mit">МИТ</a>
+            </nav>
+        </div>
+    </header>
 
     <main>
-        <section id="mit">
-            <h1>МИТ</h1>
-            <label>
-                Размер пакета: 
-                <input name="mit-packetsize" type="number" class="packet-size">  
-            </label>
-            <br>
-            <textarea name="mit" id="mit" cols="30" rows="5" placeholder="place mit here"></textarea>
+        <div class="container">
+            <section id="mit">
+                <h1>МИТ</h1>
+                <div class="inputs">
+                    <label>
+                        Размер пакета, байт: 
+                        <input name="mit-packetsize" type="number" class="packet-size">  
+                    </label>
 
-            <table class="mit-table">
-            </table>
+                    <textarea name="mit" id="mit-textarea" cols="30" rows="5" placeholder="Скопируйте сюда таблицу МИТ"></textarea>
+                </div>
 
-            <div class="mit-tables">
+                <table class="mit-table"></table>
 
-            </div>
-        </section>
+                <!-- <button class="mit-calc-btn">Рассчитать таблицы</button> -->
 
-        <section id="ipsetting">
-            <h1>IPsetting</h1>
-            <label>
-                Интенсивность потока: 
-                <input name="intensivnost" type="number">  
-            </label>
-            <br>
-            <label>
-                Размер пакета: 
-                <input name="packetsize" type="number" class="packet-size">  
-            </label>
-            <br>
-            <button class="calc-btn">calculate</button>
+                <div class="mit-tables"></div>
+            </section>
 
-            <label>
-                <input type="checkbox" name="iptv" id="">
-                ip tv
-            </label>
-            
-            <table class="main-table">
-            <tr>
-                <th>ОЦК, шт</th>
-                <th>С, бит/с</th>
-                <th>ρ</th>
-                <th>T<sub>зад</sub>, с</th>
-                <th>P<sub>сд</sub></th>
-                <th>P<sub>п</sub></th>
-            </tr>
-            </table>
+            <section id="ipsetting">
+                <h1>IPsetting</h1>
 
-            <button class="copy">copy</button>
-        </section>
+                <div class="inputs">
+                    <label>
+                        Размер пакета, байт: 
+                        <input name="packetsize" type="number" class="packet-size">  
+                    </label>
+
+                    <label>
+                        Интенсивность потока, пакет/с: 
+                        <input name="intensivnost" type="number" step="1">  
+                    </label>
+                    
+                    <label>
+                        <input type="checkbox" name="showOCK" id="">
+                        Показать ОЦК
+                    </label>
+
+                    <button class="calc-btn">Рассчитать</button>
+                </div>
+                
+                <table class="main-table hide-ock">
+                    <tr>
+                        <th>ОЦК, шт</th>
+                        <th>С, бит/с</th>
+                        <th>ρ</th>
+                        <th>T<sub>зад</sub>, с</th>
+                        <th>P<sub>сд</sub></th>
+                        <th>P<sub>п</sub></th>
+                    </tr>
+                </table>
+
+                <button class="copy">Копировать</button>
+            </section>
+        </div>
     </main>
 
     <script src="./js/main.js"></script>

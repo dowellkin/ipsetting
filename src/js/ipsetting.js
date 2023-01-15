@@ -1,11 +1,26 @@
-const load = [0.2, 0.4, 0.6, 0.8];
-
 const table = document.querySelector(".main-table");
 const intensElem = document.querySelector('input[name="intensivnost"]');
 const packetSizeElem = document.querySelector('input[name="packetsize"]');
+const showOCKElem = document.querySelector('input[name="showOCK"]');
 
 document.querySelector(".calc-btn").addEventListener("click", () => {
-	output(+intensElem.value, +packetSizeElem.value);
+	output(parseFloat(intensElem.value.replace(",", ".")), +packetSizeElem.value);
+});
+
+function hideOCKHandler(element) {
+	if (element.checked) {
+		table.classList.remove("hide-ock");
+		localStorage.setItem("hide-ock", 1);
+	} else {
+		table.classList.add("hide-ock");
+		localStorage.setItem("hide-ock", 0);
+	}
+}
+
+showOCKElem.checked = +localStorage.getItem("hide-ock") ?? 0;
+hideOCKHandler(showOCKElem);
+showOCKElem.addEventListener('change', (e) => {
+	hideOCKHandler(e.target);
 });
 
 output(intensPotoka, packetSize);
@@ -30,7 +45,6 @@ function generateRow(opts) {
 	let load = opts.load;
 	let delay = opts.delay;
 	let lost = opts.lost;
-	// console.log(opts, load)
 
 	const tr = document.createElement("tr");
 	tr.classList.add("table-row");
@@ -60,30 +74,6 @@ function generateRow(opts) {
 	tr.append(tdA);
 	tr.append(tdLost);
 	return tr;
-}
-
-function selectElementContents(el) {
-  var body = document.body,
-    range,
-    sel;
-  if (document.createRange && window.getSelection) {
-    range = document.createRange();
-    sel = window.getSelection();
-    sel.removeAllRanges();
-    try {
-      range.selectNodeContents(el);
-      sel.addRange(range);
-    } catch (e) {
-      range.selectNode(el);
-      sel.addRange(range);
-    }
-  } else if (body.createTextRange) {
-    range = body.createTextRange();
-    range.moveToElementText(el);
-    range.select();
-  }
-  document.execCommand("Copy");
-  sel.removeRange(range);
 }
 
 document.querySelector(".copy").addEventListener("click", () => {
